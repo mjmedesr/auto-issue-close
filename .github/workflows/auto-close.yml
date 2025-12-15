@@ -1,0 +1,21 @@
+name: Auto Close Issues
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    if: contains(['completed','wontfix'], github.event.label.name)
+    steps:
+      - name: Close issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            })
